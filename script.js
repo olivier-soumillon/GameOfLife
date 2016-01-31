@@ -15,7 +15,7 @@ function GameOfLife(w, h)
 
 // Cette méthode génère les cellules qui seront contenues dans la grid (première génération).
 // Chaque cellules reçoit un état aléatoire entre 0 = morte et = 1 vivante.
-// Les index des 8 cellules voisines de chaque cellules sont précalculés ici.
+// Les index des 8 cellules voisines de chaque cellule sont précalculés ici.
 
 GameOfLife.prototype.init = function() {
 	
