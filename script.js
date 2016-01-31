@@ -1,5 +1,9 @@
 
-
+/*
+ * Game of life
+ * Implementation by Olivier Soumillon
+ * 31-01-2016
+ */
 
 
 function GameOfLife(w, h)
