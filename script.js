@@ -14,8 +14,8 @@ function GameOfLife(w, h)
 };
 
 // Cette méthode est appelée une fois au début, elle génère les cellules qui seront contenues dans la grid.
-// Ces cellules reçoise un état aléatoire entre 0 = morte et = 1 vivante.
-// Les index des 8 cellules voisines de chaque cellules sont précalculés ici pour des raisons d'optimisation.
+// Ces cellules reçoivent un état aléatoire entre 0 = morte et = 1 vivante.
+// Les index des 8 cellules voisines de chaque cellules sont précalculés ici.
 GameOfLife.prototype.init = function() {
 	
 	this.grid = [];
@@ -26,7 +26,8 @@ GameOfLife.prototype.init = function() {
 	
 	for(var i = 0; i < numberOfCells; i++)
 	{
-		// Calcule des positions X et Y dans un tableau à 2D par rapport à l'index
+		// Calcule des positions X et Y dans un tableau à 2D à partir l'index
+		// (J'utilise un vecteur pour stocker les cellules, un tableau 2D serait peut-être plus optimisé ?)
 		
 		var x = i % this.gridWidth;
 		var y = ~~(i / this.gridWidth); // Le ~~ équivaut à faire Math.floor()
@@ -86,15 +87,16 @@ GameOfLife.prototype.wedge = function(number, min, max) {
 };
 	
 // Cette méthode renvoie le prochain état de la cellule en fonction de l'état de ces cellules voisines
-GameOfLife.prototype.checkState = function(i) {
+GameOfLife.prototype.getNewState = function(i) {
 	
-	var sum = 0;
+	var numberOfAliveNeighbors = 0;
+	
 	for(var j = 0; j < 8; j++)
 	{
-		sum += this.grid[this.neighbors[i][j]];
+		numberOfAliveNeighbors += this.grid[this.neighbors[i][j]];
 	}
 	
-	return +((sum == 3) || (sum == 2 && this.grid[i] == 1)); // le + permet de convertir la valeur booléenne en 1 ou en 0
+	return +((numberOfAliveNeighbors == 3) || (numberOfAliveNeighbors == 2 && this.grid[i] == 1)); // le + permet de convertir la valeur booléenne en 1 ou en 0
 }
 
 // Cette méthode actualise l'état de toutes les cellules
@@ -104,7 +106,7 @@ GameOfLife.prototype.updateGrid = function() {
 	
 	for(var i = 0; i < this.grid.length; i++)
 	{
-		newGrid.push(this.checkState(i));
+		newGrid.push(this.getNewState(i));
 	}
 	
 	this.grid = newGrid;
@@ -128,7 +130,6 @@ GameOfLife.prototype.render = function() {
 		}
 		
 		context.fillRect((i % this.gridWidth) * 5, Math.floor(i / this.gridWidth) * 5, 5, 5);
-	
 	}
 	
 };
