@@ -13,9 +13,10 @@ function GameOfLife(w, h)
 	this.neighbors = [];
 };
 
-// Cette méthode est appelée une fois au début, elle génère les cellules qui seront contenues dans la grid.
-// Ces cellules reçoivent un état aléatoire entre 0 = morte et = 1 vivante.
+// Cette méthode génère les cellules qui seront contenues dans la grid (première génération).
+// Chaque cellules reçoit un état aléatoire entre 0 = morte et = 1 vivante.
 // Les index des 8 cellules voisines de chaque cellules sont précalculés ici.
+
 GameOfLife.prototype.init = function() {
 	
 	this.grid = [];
@@ -30,12 +31,14 @@ GameOfLife.prototype.init = function() {
 		// (J'utilise un vecteur pour stocker les cellules, un tableau 2D serait peut-être plus optimisé ?)
 		
 		var x = i % this.gridWidth;
-		var y = ~~(i / this.gridWidth); // Le ~~ équivaut à faire Math.floor()
+		
+		// Le ~~ équivaut à faire Math.floor()
+		var y = ~~(i / this.gridWidth);
 	
-		// Petit schéma illustrant les 8 "cellules voisines" de X dont on doit calculer les index
+		// Petit schéma illustrant les 8 "cellules voisines" de C dont on doit calculer les index
 		
 		// 1, 2, 3
-		// 4, X, 5
+		// 4, C, 5
 		// 6, 7, 8
 	
 		// Calcule des 8 index des cellules voisines
@@ -44,6 +47,8 @@ GameOfLife.prototype.init = function() {
 		var rightX = this.wedge(x + 1, 0, this.gridWidth);
 		var upY = this.wedge(y - 1, 0, this.gridHeight);
 		var downY = this.wedge(y + 1, 0, this.gridHeight);
+	
+		// i = (y * w) + x
 	
 		var upYIndex = upY * this.gridWidth;
 		var yIndex = y * this.gridWidth;
@@ -61,6 +66,7 @@ GameOfLife.prototype.init = function() {
 		neighbors.push(downYIndex + rightX);
 		
 		// Ajout de la cellule dans le tableau
+		// Random [0,2[
 		this.grid.push(~~((Math.random() * 2) + 0));
 		this.neighbors.push(neighbors);
 	
@@ -68,7 +74,7 @@ GameOfLife.prototype.init = function() {
 };
 	
 	
-// On passe un nombre à cette fonction et elle fait reboucler ce nombre entre min et max s'il les dépasse
+// On passe un nombre à cette fonction et elle le fait reboucler entre min et max s'il en sort
 // Sachant que le nombre en question ne peut varier que de +1 ou -1 par rapport à min ou max, la routine est simplifiée
 GameOfLife.prototype.wedge = function(number, min, max) {
 
@@ -86,7 +92,7 @@ GameOfLife.prototype.wedge = function(number, min, max) {
 	}
 };
 	
-// Cette méthode renvoie le prochain état de la cellule en fonction de l'état de ces cellules voisines
+// Cette méthode renvoie le nouvel état de la cellule en fonction de l'état de ces cellules voisines
 GameOfLife.prototype.getNewState = function(i) {
 	
 	var numberOfAliveNeighbors = 0;
@@ -96,7 +102,8 @@ GameOfLife.prototype.getNewState = function(i) {
 		numberOfAliveNeighbors += this.grid[this.neighbors[i][j]];
 	}
 	
-	return +((numberOfAliveNeighbors == 3) || (numberOfAliveNeighbors == 2 && this.grid[i] == 1)); // le + permet de convertir la valeur booléenne en 1 ou en 0
+	// le + permet de convertir la valeur booléenne en 1 ou en 0
+	return +((numberOfAliveNeighbors == 3) || (numberOfAliveNeighbors == 2 && this.grid[i] == 1));
 }
 
 // Cette méthode actualise l'état de toutes les cellules
@@ -116,16 +123,17 @@ GameOfLife.prototype.updateGrid = function() {
 
 GameOfLife.prototype.render = function() {
 	
-	//console.log(this.grid);
-	
 	var canvas = document.getElementById('canvas');
 	var context = canvas.getContext('2d');
 	
 	for(var i = 0; i < this.grid.length; i++) {
 		
-		if(this.grid[i]) {
+		if(this.grid[i])
+		{
 			context.fillStyle = 'black';
-		} else {
+		}
+		else
+		{
 			context.fillStyle = 'white';
 		}
 		
